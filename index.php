@@ -1,3 +1,31 @@
+<?php
+if($_SERVER['REQUEST_METHOD'] == 'POST'){
+
+    //POSTパラメータから各種入力値を受け取る
+    $reserve_date = $_POST['reserve_date'];
+    $reserve_time = $_POST['reserve_time'];
+    $reserve_num = $_POST['reserve_num'];
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $tel = $_POST['tel'];
+    $comment = $_POST['comment'];
+
+    //各種入力値を赤書に変数に保存する
+    $_SESSION['RESERVE']['reserve_date']=$reserve_date;
+    $_SESSION['RESERVE']['reserve_time']=$reserve_time;
+    $_SESSION['RESERVE']['reserve_num']=$reserve_num;
+    $_SESSION['RESERVE']['name']=$name;
+    $_SESSION['RESERVE']['email']=$email;
+    $_SESSION['RESERVE']['tel']=$tel;
+    $_SESSION['RESERVE']['comment']=$comment;
+
+    //予約確認画面へ遷移
+    header('Location: /reserve/confirm.php');
+    exit;
+
+}
+?>
+
 <!doctype html>
 <html lang="ja">
   <head>
@@ -20,11 +48,11 @@
 <h2>ご来店予約</h2>
 
 <section class="og_box">
-<form method="post" action="confirm.php">
+<form method="post">
 
     <div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label">予約日選択</label>
-        <select class="form-select" aria-label="Default select example">
+        <select class="form-select" name="reserve_date">
         <option selected>日付</option>
         <option value="1">One</option>
         <option value="2">Two</option>
@@ -34,7 +62,7 @@
 
     <div class="mb-3">
         <label for="exampleFormControlTextarea1" class="form-label">予約時間選択</label>
-        <select class="form-select" aria-label="Default select example">
+        <select class="form-select" name="reserve_time">
         <option selected>時間</option>
         <option value="1">One</option>
         <option value="2">Two</option>
@@ -44,7 +72,7 @@
 
     <div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label">予約人数</label>
-        <select class="form-select" aria-label="Default select example">
+        <select class="form-select" name="reserve_num">
         <option selected>1人</option>
         <option value="1">One</option>
         <option value="2">Two</option>
@@ -54,14 +82,14 @@
 
     <div class="mb-3">
         <label for="exampleFormControlTextarea1" class="form-label">予約者情報入力</label>
-        <input type="email" class="form-control mb-2" id="exampleFormControlInput1" placeholder="名前">
-        <input type="email" class="form-control mb-2" id="exampleFormControlInput1" placeholder="メールアドレス">
-        <input type="email" class="form-control mb-2" id="exampleFormControlInput1" placeholder="電話番号">
+        <input type="text" class="form-control mb-2" id="exampleFormControlInput1" placeholder="名前" name="name">
+        <input type="text" class="form-control mb-2" id="exampleFormControlInput1" placeholder="メールアドレス" name="email">
+        <input type="text" class="form-control mb-2" id="exampleFormControlInput1" placeholder="電話番号" name="tel">
     </div>
 
     <div class="mb-3">
         <label for="exampleFormControlTextarea1" class="form-label">備考欄</label>
-        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="備考"></textarea>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="備考" name="comment"></textarea>
     </div>
 
     <div class="d-grid gap-2">
@@ -84,3 +112,5 @@
     -->
   </body>
 </html>
+
+

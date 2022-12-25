@@ -46,5 +46,8 @@ margin:20px;
     text-align: center;
     font-size:80px;
     color:Green;
-    margin: 0 auto;;
+    margin: 0 auto;
+}
+.btn-light{
+    border: #ccc 1px solid;
 }

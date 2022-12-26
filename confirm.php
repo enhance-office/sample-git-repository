@@ -54,7 +54,7 @@
 
     <div class="d-grid gap-2 mt-3">
         <a href="complete.php" class="btn btn-primary">予約確定</a>
-        <a href="/" class="btn btn-light">戻る</a>
+        <a href="index.php" class="btn btn-light">戻る</a>
     </div>
 
 </section>

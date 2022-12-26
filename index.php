@@ -1,4 +1,27 @@
 <?php
+require_once 'functions.php';
+
+//TODO:予約日選択配列例
+$reserve_date_array = array(
+    "20220601" => "6/1",
+    "20220602" => "6/2",
+    "20220603" => "6/3",
+);
+//TODO:予約時間選択配列例
+$reserve_time_array = array(
+    "19:00" => "19:00",
+    "20:00" => "20:00",
+    "21:00" => "21:00",
+);
+//TODO:予約人数選択配列例
+$reserve_num_array = array(
+    "1" => "1",
+    "2" => "2",
+    "3" => "3",
+);
+
+
+session_start();
 
 //エラーメッセージ格納用変数
 $err = array();
@@ -74,6 +97,26 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         exit;
     }
 
+}else{
+    //セッションに入力情報がある場合は取得する
+    if(isset($_SESSION['RESERVE'])){
+        $reserve_date = $_SESSION['RESERVE']['reserve_date'];
+        $reserve_time = $_SESSION['RESERVE']['reserve_time'];
+        $reserve_num = $_SESSION['RESERVE']['reserve_num'];
+        $name = $_SESSION['RESERVE']['name'];
+        $email = $_SESSION['RESERVE']['email'];
+        $tel = $_SESSION['RESERVE']['tel'];
+        $comment = $_SESSION['RESERVE']['comment'];
+    }else{
+        //セッションに入力情報がない場合は初期化する
+        $reserve_date = '';
+        $reserve_time = '';
+        $reserve_num = '';
+        $name = '';
+        $email = '';
+        $tel = '';
+        $comment = '';
+    }
 }
 ?>
 
@@ -104,54 +147,39 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
     <div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label">予約日選択</label>
-        <select class="form-select <?php if(isset($err['reserve_date']))echo 'is-invalid' ?>" name="reserve_date">
-            <option selected>日付</option>
-            <option value="1">One</option>
-            <option value="2">Two</option>
-        <option value="3">Three</option>
-        </select>
+        <?= arrayToSelect('reserve_date',$reserve_date_array,$reserve_date)?>
         <div class="invalid-feedback"><?= $err['reserve_date'] ?></div>
     </div>
 
     <div class="mb-3">
         <label for="exampleFormControlTextarea1" class="form-label">予約時間選択</label>
-        <select class="form-select <?php if(isset($err['reserve_time']))echo 'is-invalid' ?>" name="reserve_time">
-            <option selected>時間</option>
-            <option value="1">One</option>
-            <option value="2">Two</option>
-        <option value="3">Three</option>
-        </select>
+        <?= arrayToSelect('reserve_time',$reserve_time_array,$reserve_time)?>
         <div class="invalid-feedback"><?= $err['reserve_time'] ?></div>
     </div>
 
     <div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label">予約人数</label>
-        <select class="form-select <?php if(isset($err['reserve_num']))echo 'is-invalid' ?>" name="reserve_num">
-            <option selected>1</option>
-            <option value="1">2</option>
-            <option value="2">3</option>
-            <option value="3">4</option>
-        </select>
+        <?= arrayToSelect('reserve_num',$reserve_num_array,$reserve_num)?>
         <div class="invalid-feedback"><?= $err['reserve_num'] ?></div>
     </div>
 
     <div class="mb-3">
         <label for="exampleFormControlTextarea1" class="form-label">予約者情報入力</label>
-        <input type="text" class="form-control <?php if(isset($err['name']))echo 'is-invalid' ?>" name="name" placeholder="名前">
+        <input type="text" class="form-control <?php if(isset($err['name']))echo 'is-invalid' ?>" name="name" placeholder="名前" value="<?= $name ?>">
         <div class="invalid-feedback"><?= $err['name'] ?></div>
     </div>
     <div class="mb-3">
-        <input type="text" class="form-control <?php if(isset($err['email']))echo 'is-invalid' ?>" name="email" placeholder="メールアドレス">
+        <input type="text" class="form-control <?php if(isset($err['email']))echo 'is-invalid' ?>" name="email" placeholder="メールアドレス" value="<?= $email ?>">
         <div class="invalid-feedback"><?= $err['email'] ?></div>
         </div>
     <div class="mb-3">
-        <input type="text" class="form-control <?php if(isset($err['tel']))echo 'is-invalid' ?>" name="tel" placeholder="電話番号">
+        <input type="text" class="form-control <?php if(isset($err['tel']))echo 'is-invalid' ?>" name="tel" placeholder="電話番号" value="<?= $tel ?>">
         <div class="invalid-feedback"><?= $err['tel'] ?></div>
     </div>
 
     <div class="mb-3">
         <label for="exampleFormControlTextarea1" class="form-label">備考欄</label>
-        <textarea class="form-control  <?php if(isset($err['comment']))echo 'is-invalid' ?>" id="exampleFormControlTextarea1" rows="3" name="comment" placeholder="備考"></textarea>
+        <textarea class="form-control  <?php if(isset($err['comment']))echo 'is-invalid' ?>" id="exampleFormControlTextarea1" rows="3" name="comment" placeholder="備考"><?= $comment ?></textarea>
         <div class="invalid-feedback"><?= $err['comment'] ?></div>
     </div>
 

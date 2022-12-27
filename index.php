@@ -3,9 +3,9 @@ require_once 'functions.php';
 
 //TODO:予約日選択配列例
 $reserve_date_array = array(
-    "20220601" => "6/1",
-    "20220602" => "6/2",
-    "20220603" => "6/3",
+    "0601" => "6/1",
+    "0602" => "6/2",
+    "0603" => "6/3",
 );
 //TODO:予約時間選択配列例
 $reserve_time_array = array(

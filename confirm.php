@@ -1,4 +1,5 @@
 <?php
+require_once 'functions.php';
 session_start();
 
 ?>
@@ -30,7 +31,7 @@ session_start();
 
     <tr>
       <th scope="row">予約日</th>
-      <td><?= $_SESSION['RESERVE']['reserve_date'] ?></td>
+      <td><?= format_date($_SESSION['RESERVE']['reserve_date']) ?></td>
     </tr>
     <tr>
       <th scope="row">予約時間</th>

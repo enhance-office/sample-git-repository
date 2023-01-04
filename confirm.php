@@ -56,23 +56,6 @@ EOT;
       //TODO:メール送信テストはサーバー上で実装
       // mb_send_mail($email,$subjet,$body,$from);
 
-      //店舗管理者にメール送信
-      $subjet='【Reserve】ご予約が確定しました。';
-      $body=<<<EOT
-以下の内容でご予約が確定しました。
-
-ご予約内容
-[日時]{$view_reserve_date}{$reserve_time}
-[人数]{$reserve_num}人
-[氏名]{$name}
-[メールアドレス]{$email}
-[電話番号]{$tel}
-[備考]{$comment}
-EOT;
-
-      //TODO:メール送信テストはサーバー上で実装
-      // mb_send_mail(ADMIN_EMAIL,$subjet,$body,$from);
-
       //予約が正常に完了したらセッションのデータをクリア
       unset($_SESSION['RESERVE']);
 

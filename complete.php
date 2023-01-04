@@ -27,7 +27,7 @@
     </div>
 
     <div class="d-grid gap-2 mt-3">
-        <a href="/" class="btn btn-primary">トップに戻る</a>
+        <a href="index.php" class="btn btn-primary">トップに戻る</a>
     </div>
 
 </section>

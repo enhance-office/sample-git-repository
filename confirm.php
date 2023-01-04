@@ -31,6 +31,31 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
       $stmt->bindValue(':comment', $comment, PDO::PARAM_STR);
       $stmt->execute();
 
+      //予約者にメール送信
+      $from='From:Web予約システムReserve <'.ADMIN_EMAIL.'>';
+
+      $view_reserve_date=format_date($reserve_date);
+
+      $subjet='ご予約が確定しました。';
+      $body=<<<EOT
+{$name}様
+
+以下の内容でご予約を承りました。
+
+ご予約内容
+[日時]{$view_reserve_date}{$reserve_time}
+[人数]{$reserve_num}人
+[氏名]{$name}
+[メールアドレス]{$email}
+[電話番号]{$tel}
+[備考]{$comment}
+
+ではご来店をお待ちしております。
+EOT;
+
+      //TODO:メール送信テストはサーバー上で実装
+      // mb_send_mail($email,$subjet,$body,$from);
+
       //予約が正常に完了したらセッションのデータをクリア
       unset($_SESSION['RESERVE']);
 

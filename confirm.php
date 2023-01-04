@@ -2,6 +2,52 @@
 require_once 'functions.php';
 session_start();
 
+//予約確定ボタンが押されたら場合の処理
+if($_SERVER['REQUEST_METHOD'] == 'POST'){
+    //セッションから入力情報を取得する
+    if(isset($_SESSION['RESERVE'])){
+      $reserve_date = $_SESSION['RESERVE']['reserve_date'];
+      $reserve_time = $_SESSION['RESERVE']['reserve_time'];
+      $reserve_num = $_SESSION['RESERVE']['reserve_num'];
+      $name = $_SESSION['RESERVE']['name'];
+      $email = $_SESSION['RESERVE']['email'];
+      $tel = $_SESSION['RESERVE']['tel'];
+      $comment = $_SESSION['RESERVE']['comment'];
+
+      //TODO:予約が確定可能かどうか最終チェック
+
+      //DBに接続
+      $pdo = new PDO('mysql:dbname='.DB_NAME.';host='.DB_HOST.';',DB_USER,DB_USER);
+      $pdo->query('SET NAMES utf8;');
+
+      //reserveテーブルにINSERT
+      $stmt = $pdo->prepare('INSERT INTO reserve (reserve_date,reserve_time,reserve_num,name,email,tel,comment) VALUES(:reserve_date,:reserve_time,:reserve_num,:name,:email,:tel,:comment)');
+      $stmt->bindValue(':reserve_date', $reserve_date, PDO::PARAM_STR);
+      $stmt->bindValue(':reserve_time', $reserve_time, PDO::PARAM_STR);
+      $stmt->bindValue(':reserve_num', $reserve_num, PDO::PARAM_INT);
+      $stmt->bindValue(':name', $name, PDO::PARAM_STR);
+      $stmt->bindValue(':email', $email, PDO::PARAM_STR);
+      $stmt->bindValue(':tel', $tel, PDO::PARAM_STR);
+      $stmt->bindValue(':comment', $comment, PDO::PARAM_STR);
+      $stmt->execute();
+
+      //予約が正常に完了したらセッションのデータをクリア
+      unset($_SESSION['RESERVE']);
+
+      //DBから切断
+      unset($pdo);
+
+      //予約完了画面の表示
+      header('Location: /reserve/complete.php');
+      exit;
+
+    }else{
+      //セッションからデータを取得できない場合はエラー
+      //TODO:エラー処理
+
+    }
+  }
+
 ?>
 <!doctype html>
 <html lang="ja">
@@ -26,6 +72,7 @@ session_start();
 
 <section class="og_box">
 
+<form method="post">
 <table class="table">
   <tbody>
 
@@ -62,9 +109,10 @@ session_start();
 </table>
 
     <div class="d-grid gap-2 mt-3">
-        <a href="complete.php" class="btn btn-primary">予約確定</a>
+        <button class="btn btn-primary" type="submit">予約確定</button>
         <a href="index.php" class="btn btn-light">戻る</a>
     </div>
+</form>
 
 </section>
 

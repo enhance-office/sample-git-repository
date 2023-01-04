@@ -3,9 +3,9 @@ require_once 'functions.php';
 
 //TODO:予約日選択配列例
 $reserve_date_array = array(
-    "0601" => "6/1",
-    "0602" => "6/2",
-    "0603" => "6/3",
+    "20220601" => "6/1",
+    "20220602" => "6/2",
+    "20220603" => "6/3",
 );
 //TODO:予約時間選択配列例
 $reserve_time_array = array(
@@ -27,7 +27,6 @@ session_start();
 $err = array();
 
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
-
     //POSTパラメータから各種入力値を受け取る
     $reserve_date = $_POST['reserve_date'];
     $reserve_time = $_POST['reserve_time'];
@@ -83,7 +82,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     //エラーが無ければ次の処理へ進む
     if(empty($err)){
 
-        //各種入力値を赤書に変数に保存する
+        //各種入力値をセッションに変数に保存する
         $_SESSION['RESERVE']['reserve_date']=$reserve_date;
         $_SESSION['RESERVE']['reserve_time']=$reserve_time;
         $_SESSION['RESERVE']['reserve_num']=$reserve_num;

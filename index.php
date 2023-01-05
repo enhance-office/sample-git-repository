@@ -1,24 +1,50 @@
 <?php
 require_once 'functions.php';
 
-//TODO:予約日選択配列例
-$reserve_date_array = array(
-    "20220601" => "6/1",
-    "20220602" => "6/2",
-    "20220603" => "6/3",
-);
-//TODO:予約時間選択配列例
-$reserve_time_array = array(
-    "19:00" => "19:00",
-    "20:00" => "20:00",
-    "21:00" => "21:00",
-);
-//TODO:予約人数選択配列例
-$reserve_num_array = array(
-    "1" => "1",
-    "2" => "2",
-    "3" => "3",
-);
+//DBに接続
+$pdo = new PDO('mysql:dbname='.DB_NAME.';host='.DB_HOST.';',DB_USER,DB_USER);
+$pdo->query('SET NAMES utf8;');
+
+//ショップデータを取得
+$stmt = $pdo->prepare('SELECT * FROM shop WHERE id=:id');
+$stmt->bindValue(':id', 1, PDO::PARAM_INT);
+$stmt->execute();
+$shop=$stmt->fetch();
+
+
+//予約日選択配列例
+$reserve_date_array=array();
+for($i=0;$i<=$shop['reservable_date'];$i++){
+    //対象日を取得
+    $target_date=strtotime("+{$i}day");
+
+    //配列に設定
+    $reserve_date_array[date('ymd',$target_date)]=date('n/j',$target_date);
+}
+
+//予約時間選択配列例
+//TODO:24時以降の扱いたい
+$reserve_time_array = array();
+for($i=date('G',strtotime($shop['start_time'])); $i<=date('G',strtotime($shop['end_time'])); $i++){
+    $reserve_time_array[sprintf('%02d',$i).':00']=sprintf('%02d',$i).':00';
+}
+
+//予約時間選択配列例
+$reserve_num_array = array();
+for($i=1;$i<=$shop['max_reserve_num'];$i++){
+    //配列に設定
+    $reserve_num_array[$i]=$i;
+}
+
+//配列チェック用バーダンプ
+// var_dump($reserve_num_array);
+// exit;
+
+//配列チェック用エコー
+// echo date('G',strtotime($shop['start_time']));
+// echo "<br>";
+// echo date('G',strtotime($shop['end_time']));
+// exit;
 
 
 session_start();

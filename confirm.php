@@ -2,6 +2,16 @@
 require_once 'functions.php';
 session_start();
 
+//DBに接続
+$pdo = new PDO('mysql:dbname='.DB_NAME.';host='.DB_HOST.';',DB_USER,DB_USER);
+$pdo->query('SET NAMES utf8;');
+
+//ショップデータを取得
+$stmt = $pdo->prepare('SELECT * FROM shop WHERE id=:id');
+$stmt->bindValue(':id', 1, PDO::PARAM_INT);
+$stmt->execute();
+$shop=$stmt->fetch();
+
 //予約確定ボタンが押されたら場合の処理
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
     //セッションから入力情報を取得する
@@ -15,10 +25,20 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
       $comment = $_SESSION['RESERVE']['comment'];
 
       //TODO:予約が確定可能かどうか最終チェック
+      //DBのreserveテーブルからその日時の「予約成立済み人数」を取得
+      $stmt = $pdo->prepare("SELECT SUM(reserve_num) FROM reserve WHERE DATE_FORMAT(reserve_date,'%Y%m%d')=:reserve_date AND DATE_FORMAT(reserve_time,'%H:%i')=:reserve_time GROUP BY reserve_date,reserve_time LIMIT 1");
+      $stmt->bindValue(':reserve_date',$reserve_date,PDO::PARAM_STR);
+      $stmt->bindValue(':reserve_time',$reserve_time,PDO::PARAM_STR);
+      $stmt->execute();
+      $reserve_count = $stmt->fetchColumn();
 
-      //DBに接続
-      $pdo = new PDO('mysql:dbname='.DB_NAME.';host='.DB_HOST.';',DB_USER,DB_USER);
-      $pdo->query('SET NAMES utf8;');
+      //1時間あたりの予約上限チェック
+      if($reserve_count && ($reserve_count+$reserve_num)>$shop['max_reserve_num']){
+          $err['common']='この日時は既に予約が埋まっておりますので別の日時をご指定ください。';
+      }
+
+      //エラーがなければ次の処理に進む
+      if(empty($err)){
 
       //reserveテーブルにINSERT
       $stmt = $pdo->prepare('INSERT INTO reserve (reserve_date,reserve_time,reserve_num,name,email,tel,comment) VALUES(:reserve_date,:reserve_time,:reserve_num,:name,:email,:tel,:comment)');
@@ -65,7 +85,7 @@ EOT;
       //予約完了画面の表示
       header('Location: /reserve/complete.php');
       exit;
-
+      }
     }else{
       //セッションからデータを取得できない場合はエラー
       //TODO:エラー処理
@@ -98,6 +118,10 @@ EOT;
 <section class="og_box">
 
 <form method="post">
+<?php if(isset($err['common'])): ?>
+<div class="alert alert-danger" role="alert"><?= $err['common'] ?></div>
+<?php endif; ?>
+
 <table class="table">
   <tbody>
 

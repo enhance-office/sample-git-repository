@@ -25,6 +25,6 @@ function arrayToSelect($inputName, $srcArray, $selectedIndex= "")
 
 //引数で与えられた日付を表示形式に変換
 function format_date($yyyymmdd){
-    $week =array("日",'月','火','水','木','金','土');
+    $week =array('日','月','火','水','木','金','土');
     return date('n/j('.$week[date('w',strtotime($yyyymmdd))].')', strtotime($yyyymmdd));
 }

@@ -11,41 +11,29 @@ $stmt->bindValue(':id', 1, PDO::PARAM_INT);
 $stmt->execute();
 $shop=$stmt->fetch();
 
-
-//予約日選択配列例
+//予約日選択配列
 $reserve_date_array=array();
 for($i=0;$i<=$shop['reservable_date'];$i++){
     //対象日を取得
     $target_date=strtotime("+{$i}day");
 
     //配列に設定
-    $reserve_date_array[date('ymd',$target_date)]=date('n/j',$target_date);
+    $reserve_date_array[date('Ymd',$target_date)]=date('n/j',$target_date);
 }
 
-//予約時間選択配列例
-//TODO:24時以降の扱いたい
+//予約時間選択配列
+//TODO:24時以降を扱いたい
 $reserve_time_array = array();
 for($i=date('G',strtotime($shop['start_time'])); $i<=date('G',strtotime($shop['end_time'])); $i++){
     $reserve_time_array[sprintf('%02d',$i).':00']=sprintf('%02d',$i).':00';
 }
 
-//予約時間選択配列例
+//予約時間選択配列
 $reserve_num_array = array();
 for($i=1;$i<=$shop['max_reserve_num'];$i++){
     //配列に設定
     $reserve_num_array[$i]=$i;
 }
-
-//配列チェック用バーダンプ
-// var_dump($reserve_num_array);
-// exit;
-
-//配列チェック用エコー
-// echo date('G',strtotime($shop['start_time']));
-// echo "<br>";
-// echo date('G',strtotime($shop['end_time']));
-// exit;
-
 
 session_start();
 
@@ -107,7 +95,19 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
     //エラーが無ければ次の処理へ進む
     if(empty($err)){
+        //DBのreserveテーブルからその日時の「予約成立済み人数」を取得
+        $stmt = $pdo->prepare("SELECT SUM(reserve_num) FROM reserve WHERE DATE_FORMAT(reserve_date,'%Y%m%d')=:reserve_date AND DATE_FORMAT(reserve_time,'%H:%i')=:reserve_time GROUP BY reserve_date,reserve_time LIMIT 1");
+        $stmt->bindValue(':reserve_date',$reserve_date,PDO::PARAM_STR);
+        $stmt->bindValue(':reserve_time',$reserve_time,PDO::PARAM_STR);
+        $stmt->execute();
+        $reserve_count = $stmt->fetchColumn();
 
+        //1時間あたりの予約上限チェック
+        if($reserve_count && ($reserve_count+$reserve_num)>$shop['max_reserve_num']){
+            $err['common']='この日時は既に予約が埋まっておりますので別の日時をご指定ください。';
+        }
+
+        if(empty($err)){
         //各種入力値をセッションに変数に保存する
         $_SESSION['RESERVE']['reserve_date']=$reserve_date;
         $_SESSION['RESERVE']['reserve_time']=$reserve_time;
@@ -120,7 +120,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         //予約確認画面へ遷移
         header('Location: /reserve/confirm.php');
         exit;
+        }
     }
+
 
 }else{
     //セッションに入力情報がある場合は取得する
@@ -169,6 +171,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
 <section class="og_box">
 <form method="post">
+
+<?php if(isset($err['common'])): ?>
+<div class="alert alert-danger" role="alert">
+    <?= $err['common'] ?>
+</div>
+<?php endif; ?>
 
     <div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label">予約日選択</label>

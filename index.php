@@ -107,6 +107,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             $err['common']='この日時は既に予約が埋まっておりますので別の日時をご指定ください。';
         }
 
+        //エラーがなければ次の処理に進む
         if(empty($err)){
         //各種入力値をセッションに変数に保存する
         $_SESSION['RESERVE']['reserve_date']=$reserve_date;
@@ -173,9 +174,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 <form method="post">
 
 <?php if(isset($err['common'])): ?>
-<div class="alert alert-danger" role="alert">
-    <?= $err['common'] ?>
-</div>
+<div class="alert alert-danger" role="alert"><?= $err['common'] ?></div>
 <?php endif; ?>
 
     <div class="mb-3">

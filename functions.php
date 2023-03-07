@@ -1,6 +1,6 @@
 <?php
 
-require_once '../config/config.php';
+require_once(dirname(__FILE__).'/../config/config.php');
 
 //プルダウン箇所は比較処理が必要な為、共通関数を制作
 

@@ -1,3 +1,47 @@
+<?php
+
+require_once(dirname(__FILE__).'/../functions.php');
+
+//DBに接続
+$pdo = new PDO('mysql:dbname='.DB_NAME.';host='.DB_HOST.';',DB_USER,DB_USER);
+$pdo->query('SET NAMES utf8;');
+
+$year = @$_GET['year'];
+$month = @$_GET['month'];
+
+if(!$year){
+  $year=date('Y');
+}
+
+if(!$month){
+  $month=date('m');
+}
+
+//対象年月の予約データを取得
+$stmt = $pdo->prepare("SELECT * FROM reserve WHERE DATE_FORMAT(reserve_date,'%Y%m')=:yyyymm ORDER BY reserve_date,reserve_time");
+$stmt->bindValue(':yyyymm',$year.$month,PDO::PARAM_STR);
+$stmt->execute();
+$reserve_list = $stmt->fetchAll();
+
+//デバッグ
+//var_dump($reserve_list);
+//exit;
+
+//年プルダウンの構築（1年前から3年後まで）
+$year_array=array();
+$current_year=date('Y');
+for($i=($current_year - 1);$i <= ($current_year +3); $i++){
+  $year_array[$i]=$i.'年';
+}
+
+//月プルダウンの構築（1月から12月）
+$month_array=array();
+for($i=1;$i <=12;$i++){
+  $month_array[sprintf('%02d',$i)]=$i.'月';
+}
+
+?>
+
 <!doctype html>
 <html lang="ja">
   <head>
@@ -27,59 +71,41 @@
 
 <section class="og_box">
 
+<form id="filter-form" method="get">
 <div class="row mx-3 mb-2">
   <div class="col">
-        <select class="form-select" aria-label="Default select example">
-        <option selected>2022</option>
-        <option value="1">2023</option>
-        </select>
+    <?= arrayToSelect('year',$year_array,$year)?>
   </div>
   <div class="col mx-3 mb-2">
-        <select class="form-select" aria-label="Default select example">
-        <option selected>1月</option>
-        <option value="1">2月</option>
-        </select>
+    <?= arrayToSelect('month',$month_array,$month)?>
   </div>
 </div>
+</form>
+
+
+<?php if(!$reserve_list):?>
+  <div class="alert alert-warning" role="alert">予約データがありません。</div>
+<?php else:?>
 
 <table class="table">
   <tbody>
-
+  <?php foreach($reserve_list as $reserve):?>
     <tr>
-      <th scope="row">2022/12/12<br>19:00〜20:00</th>
-      <td>サンプル<br>6人<br>090-0900-0909<br>info@info<br>備考</td>
+      <th class="px-2"><?= format_date($reserve['reserve_date'])?></th>
+      <th class="px-2"><?= format_time($reserve['reserve_time'])?></th>
+      <td class="px-2">
+        <?= $reserve['name']?><br>
+        <?= $reserve['reserve_num']?>名<br>
+        <?= $reserve['email']?><br>
+        <?= $reserve['tel']?><br>
+        <?= mb_strimwidth($reserve['comment'],0,90,'...')?>
+      </td>
     </tr>
-    <tr>
-      <th scope="row">2022/12/12<br>19:00〜20:00</th>
-      <td>サンプル<br>6人<br>090-0900-0909<br>info@info<br>備考</td>
-    </tr>
-    <tr>
-      <th scope="row">2022/12/12<br>19:00〜20:00</th>
-      <td>サンプル<br>6人<br>090-0900-0909<br>info@info<br>備考</td>
-    </tr>
-    <tr>
-      <th scope="row">2022/12/12<br>19:00〜20:00</th>
-      <td>サンプル<br>6人<br>090-0900-0909<br>info@info<br>備考</td>
-    </tr>
-    <tr>
-      <th scope="row">2022/12/12<br>19:00〜20:00</th>
-      <td>サンプル<br>6人<br>090-0900-0909<br>info@info<br>備考</td>
-    </tr>
-    <tr>
-      <th scope="row">2022/12/12<br>19:00〜20:00</th>
-      <td>サンプル<br>6人<br>090-0900-0909<br>info@info<br>備考</td>
-    </tr>
-    <tr>
-      <th scope="row">2022/12/12<br>19:00〜20:00</th>
-      <td>サンプル<br>6人<br>090-0900-0909<br>info@info<br>備考</td>
-    </tr>
-    <tr>
-      <th scope="row">2022/12/12<br>19:00〜20:00</th>
-      <td>サンプル<br>6人<br>090-0900-0909<br>info@info<br>備考</td>
-    </tr>
-
+  <?php endforeach; ?>
   </tbody>
 </table>
+
+<?php endif;?>
 
 </section>
 
@@ -93,5 +119,15 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
     -->
+
+     <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+
+    <script>
+      $('.form-select').change(function(){
+        $('#filter-form').submit()
+      })
+    </script>
+
   </body>
 </html>

@@ -28,3 +28,8 @@ function format_date($yyyymmdd){
     $week =array('日','月','火','水','木','金','土');
     return date('n/j('.$week[date('w',strtotime($yyyymmdd))].')', strtotime($yyyymmdd));
 }
+
+//引数で与えられた時間を表示形式「00:00」に変換
+function format_time($time){
+    return substr($time, 0, -3);
+}

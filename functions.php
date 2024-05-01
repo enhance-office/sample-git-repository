@@ -2,6 +2,24 @@
 
 require_once(dirname(__FILE__).'/../config/config.php');
 
+//DBに接続
+function connectDb()
+{
+$pdo = new PDO('mysql:dbname='.DB_NAME.';host='.DB_HOST.';',DB_USER,DB_USER);
+$pdo->query('SET NAMES utf8;');
+return $pdo;
+}
+
+//ショップデータを取得
+function getShop()
+{
+global $pdo;
+$stmt = $pdo->prepare('SELECT * FROM shop WHERE id=:id');
+$stmt->bindValue(':id', SHOP_ID, PDO::PARAM_INT);
+$stmt->execute();
+return $stmt->fetch();
+}
+
 //プルダウン箇所は比較処理が必要な為、共通関数を制作
 
 //引数で与えられた配列を元にプルダウンリストを自動生成

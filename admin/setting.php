@@ -1,22 +1,28 @@
 <?php
 require_once(dirname(__FILE__).'/../functions.php');
 
+try{
+$page_title ='設定｜トリッキーズ';
+
 session_start();
 $err = array();
 $complete_meseage = '';
 
+if(!isset($_SESSION['USER'])){
+  //ログインしていない場合はログイン画面へ↓何故かパスが教材とは違う/reserve/付けなければ動作しない
+  header('Location: /reserve/admin/login.php');
+  unset($pdo);
+  exit;
+}
+
 //DBに接続
-$pdo = new PDO('mysql:dbname='.DB_NAME.';host='.DB_HOST.';',DB_USER,DB_USER);
-$pdo->query('SET NAMES utf8;');
+$pdo = connectDb();
 
 //ショップデータを取得
-$stmt = $pdo->prepare('SELECT * FROM shop WHERE id=:id');
-$stmt->bindValue(':id', 1, PDO::PARAM_INT);
-$stmt->execute();
-$shop=$stmt->fetch();
+$shop = getShop();
 
 $reservable_date_array = array();
-for($i = 0; $i <= 10; $i++){
+for($i = 0; $i <= MAX_RESERVABLE_DATA; $i++){
   $reservable_date_array[$i] = $i .'日前';
 }
 
@@ -26,7 +32,7 @@ for($i = 0; $i <= 23; $i++){
 }
 
 $max_reserve_num_array =array();
-for($i = 1; $i <= 10; $i++){
+for($i = 1; $i <= MAX_RESERVABLE_NUM; $i++){
   $max_reserve_num_array[$i] = $i .'人';
 }
 
@@ -82,21 +88,23 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
   $end_time = format_time($shop['end_time']);
   $max_reserve_num = $shop['max_reserve_num'];
 }
+}catch(Exception $e){
+  header('Location: /error.php');
+  unset($pdo);
+  exit;
+}
+unset($pdo);
 ?>
 
 <!doctype html>
 <html lang="ja">
   <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link href="../css/style.css" media="all" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
-    <title>設定｜トリッキーズ</title>
+  <?php include(dirname(__FILE__).'/../templates/headtag.php');?>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link href="/reserve/css/style.css" media="all" rel="stylesheet">
   </head>
+
   <body>
 
   <header class="navbar">
@@ -175,15 +183,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
 </form>
 
-    <!-- Optional JavaScript; choose one of the two! -->
+<?php include(dirname(__FILE__).'/../templates/script.php');?>
 
-    <!-- Option 1: Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
-    <!-- Option 2: Separate Popper and Bootstrap JS -->
-    <!--
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-    -->
   </body>
 </html>

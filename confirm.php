@@ -1,16 +1,17 @@
 <?php
-require_once 'functions.php';
+require_once(dirname(__FILE__).'/functions.php');
+
+try{
+$page_title ='ご予約確認｜トリッキーズ';
+
 session_start();
+$err = array();
 
 //DBに接続
-$pdo = new PDO('mysql:dbname='.DB_NAME.';host='.DB_HOST.';',DB_USER,DB_USER);
-$pdo->query('SET NAMES utf8;');
+$pdo = connectDb();
 
 //ショップデータを取得
-$stmt = $pdo->prepare('SELECT * FROM shop WHERE id=:id');
-$stmt->bindValue(':id', 1, PDO::PARAM_INT);
-$stmt->execute();
-$shop=$stmt->fetch();
+$shop = getShop();
 
 //予約確定ボタンが押されたら場合の処理
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
@@ -101,28 +102,26 @@ EOT;
 
       //予約完了画面の表示
       header('Location: /reserve/complete.php');
+      unset($pdo);
       exit;
       }
     }else{
       //セッションからデータを取得できない場合はエラー
       //TODO:エラー処理
-
+      unset($pdo);
     }
   }
-
+}catch(Exception $e){
+  header('Location: /error.php');
+  unset($pdo);
+  exit;
+}
+  unset($pdo);
 ?>
 <!doctype html>
 <html lang="ja">
   <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link href="css/style.css" media="all" rel="stylesheet">
-
-    <title>ご予約確認｜トリッキーズ</title>
+  <?php include(dirname(__FILE__).'/templates/headtag.php');?>
   </head>
   <body>
 
@@ -139,7 +138,7 @@ EOT;
 <div class="alert alert-danger" role="alert"><?= $err['common'] ?></div>
 <?php endif; ?>
 
-<table class="table">
+<table class="table confirrm-table">
   <tbody>
 
     <tr>
@@ -182,15 +181,7 @@ EOT;
 
 </section>
 
-    <!-- Optional JavaScript; choose one of the two! -->
+<?php include(dirname(__FILE__).'/templates/script.php');?>
 
-    <!-- Option 1: Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
-    <!-- Option 2: Separate Popper and Bootstrap JS -->
-    <!--
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-    -->
   </body>
 </html>

@@ -1,15 +1,17 @@
 <?php
-require_once 'functions.php';
+require_once(dirname(__FILE__).'/functions.php');
+
+try{
+$page_title ='ご来店予約｜トリッキーズ';
+
+session_start();
+$err = array();
 
 //DBに接続
-$pdo = new PDO('mysql:dbname='.DB_NAME.';host='.DB_HOST.';',DB_USER,DB_USER);
-$pdo->query('SET NAMES utf8;');
+$pdo = connectDb();
 
 //ショップデータを取得
-$stmt = $pdo->prepare('SELECT * FROM shop WHERE id=:id');
-$stmt->bindValue(':id', 1, PDO::PARAM_INT);
-$stmt->execute();
-$shop=$stmt->fetch();
+$shop = getShop();
 
 //予約日選択配列
 $reserve_date_array=array();
@@ -34,11 +36,6 @@ for($i=1;$i<=$shop['max_reserve_num'];$i++){
     //配列に設定
     $reserve_num_array[$i]=$i;
 }
-
-session_start();
-
-//エラーメッセージ格納用変数
-$err = array();
 
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
     //POSTパラメータから各種入力値を受け取る
@@ -86,7 +83,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     }else if(mb_strlen($tel,'utf-8')>20){
         $err['tel'] = '電話番号は20文字以内で入力してください。';      
     }else if(!preg_match('/^[0-9]{2,4}-[0-9]{2,4}-[0-9]{3,4}$/',$tel)){
-        $err['tel'] = '電話番号を正しく入力してください。';  
+        $err['tel'] = '電話番号を正しく入力してください。※ハイフン含む形式でご記入ください。例:000-0000-0000';  
     }
 
     if(mb_strlen($comment,'utf-8')>2000){
@@ -120,6 +117,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
         //予約確認画面へ遷移
         header('Location: /reserve/confirm.php');
+        unset($pdo);
         exit;
         }
     }
@@ -146,20 +144,18 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         $comment = '';
     }
 }
+}catch(Exception $e){
+    header('Location: /error.php');
+    unset($pdo);
+    exit;
+}
+unset($pdo);
 ?>
 
 <!doctype html>
 <html lang="ja">
   <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link href="css/style.css" media="all" rel="stylesheet">
-
-    <title>ご来店予約｜トリッキーズ</title>
+  <?php include(dirname(__FILE__).'/templates/headtag.php');?>
   </head>
   <body>
 
@@ -223,16 +219,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 </form>
 </section>
 
-    <!-- Optional JavaScript; choose one of the two! -->
+<?php include(dirname(__FILE__).'/templates/script.php');?>
 
-    <!-- Option 1: Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
-    <!-- Option 2: Separate Popper and Bootstrap JS -->
-    <!--
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-    -->
   </body>
 </html>
 

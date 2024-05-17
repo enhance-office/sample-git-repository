@@ -47,21 +47,26 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $tel = $_POST['tel'];
     $comment = $_POST['comment'];
  
+
     //各種入力値のバリエーション
     if(!$reserve_date){
         $err['reserve_date'] = '予約日を入力してください。';
+    }else if(!array_key_exists($reserve_date,$reserve_date_array)){
+        $err['reserve_date'] = '予約日を正しく入力してください。';
     }
-    //TODO:予約日はプルダウン設定値を決定後にバリエーション実装
 
     if(!$reserve_time){
         $err['reserve_time'] = '予約時間を入力してください。';
+    }else if(!array_key_exists($reserve_time,$reserve_time_array)){
+        $err['reserve_time'] = '予約時間を正しく入力してください。';
     }
-    //TODO:予約時間はプルダウン設定値を決定後にバリエーション実装
 
     if(!$reserve_num){
         $err['reserve_num'] = '予約人数を入力してください。';
     }else if(!preg_match('/^[0-9]+$/',$reserve_num)){
-        $err['reserve_num'] = '人数を正しく入力してください。';  
+        $err['reserve_num'] = '人数を正しく入力してください。'; 
+    }else if(!array_key_exists($reserve_num,$reserve_num_array)){
+        $err['reserve_num'] = '人数を正しく入力してください。'; 
     }
 
     if(!$name){
@@ -175,19 +180,37 @@ unset($pdo);
 
     <div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label">予約日選択</label>
-        <?= arrayToSelect('reserve_date',$reserve_date_array,$reserve_date)?>
+        <?php
+        $class = 'form-select';
+        if(isset($err['reserve_date'])){
+          $class .= ' is-invalid';
+        }
+        ?>
+        <?= arrayToSelect('reserve_date',$reserve_date_array,$reserve_date,$class)?>
         <div class="invalid-feedback"><?= $err['reserve_date'] ?></div>
     </div>
 
     <div class="mb-3">
         <label for="exampleFormControlTextarea1" class="form-label">予約時間選択</label>
-        <?= arrayToSelect('reserve_time',$reserve_time_array,$reserve_time)?>
+        <?php
+        $class = 'form-select';
+        if(isset($err['reserve_time'])){
+          $class .= ' is-invalid';
+        }
+        ?>
+        <?= arrayToSelect('reserve_time',$reserve_time_array,$reserve_time,$class)?>
         <div class="invalid-feedback"><?= $err['reserve_time'] ?></div>
     </div>
 
     <div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label">予約人数</label>
-        <?= arrayToSelect('reserve_num',$reserve_num_array,$reserve_num)?>
+        <?php
+        $class = 'form-select';
+        if(isset($err['reserve_num'])){
+          $class .= ' is-invalid';
+        }
+        ?>
+        <?= arrayToSelect('reserve_num',$reserve_num_array,$reserve_num,$class)?>
         <div class="invalid-feedback"><?= $err['reserve_num'] ?></div>
     </div>
 

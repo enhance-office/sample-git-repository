@@ -38,6 +38,7 @@ for($i=1;$i<=$shop['max_reserve_num'];$i++){
 }
 
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
+    check_token();
     //POSTパラメータから各種入力値を受け取る
     $reserve_date = $_POST['reserve_date'];
     $reserve_time = $_POST['reserve_time'];
@@ -129,6 +130,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
 
 }else{
+    set_token();
     //セッションに入力情報がある場合は取得する
     if(isset($_SESSION['RESERVE'])){
         $reserve_date = $_SESSION['RESERVE']['reserve_date'];
@@ -239,6 +241,7 @@ unset($pdo);
         <button class="btn btn-light" type="button">戻る</button>
     </div>
 
+    <input type="hidden" name="CSRF_TOKEN" value="<?=$_SESSION['CSRF_TOKEN']?>">
 </form>
 </section>
 

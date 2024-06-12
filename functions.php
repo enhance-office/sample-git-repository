@@ -51,3 +51,26 @@ function format_date($yyyymmdd){
 function format_time($time){
     return substr($time, 0, -3);
 }
+
+//HTMLエスケープ処理（XSS対策）
+function h($original_str)
+{
+    return htmlspecialchars($original_str,ENT_QUOTES,'UTR-8');
+}
+
+
+//トークンを発行する処理
+function set_token()
+{
+    $token = sha1(uniqid(mt_rand(),true));
+    $_SESSION['CSRF_TOKEN'] = $token;
+}
+//トークンをチェックする処理
+function check_token()
+{
+    if(empty($_SESSION['CSRF_TOKEN'])||($_SESSION['CSRF_TOKEN']!= $_POST['CSRF_TOKEN'])){
+        unset($pdo);
+        header('Location: /reserve/error.php');
+        exit;
+    }
+}

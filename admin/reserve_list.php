@@ -97,14 +97,14 @@ unset($pdo);
   <tbody>
   <?php foreach($reserve_list as $reserve):?>
     <tr>
-      <th class="px-2"><?= format_date($reserve['reserve_date'])?></th>
-      <th class="px-2"><?= format_time($reserve['reserve_time'])?></th>
+      <th class="px-2"><?= format_date(h($reserve['reserve_date']))?></th>
+      <th class="px-2"><?= format_time(h($reserve['reserve_time']))?></th>
       <td class="px-2">
-        <?= $reserve['name']?><br>
-        <?= $reserve['reserve_num']?>名<br>
-        <?= $reserve['email']?><br>
-        <?= $reserve['tel']?><br>
-        <?= mb_strimwidth($reserve['comment'],0,90,'...')?>
+        <?= h($reserve['name'])?><br>
+        <?= h($reserve['reserve_num'])?>名<br>
+        <?= h($reserve['email'])?><br>
+        <?= h($reserve['tel'])?><br>
+        <?= mb_strimwidth(h($reserve['comment']),0,90,'...')?>
       </td>
     </tr>
   <?php endforeach; ?>

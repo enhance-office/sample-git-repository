@@ -143,31 +143,31 @@ EOT;
 
     <tr>
       <th scope="row">予約日</th>
-      <td><?= format_date($_SESSION['RESERVE']['reserve_date']) ?></td>
+      <td><?= format_date(h($_SESSION['RESERVE']['reserve_date'])) ?></td>
     </tr>
     <tr>
       <th scope="row">予約時間</th>
-      <td><?= $_SESSION['RESERVE']['reserve_time'] ?></td>
+      <td><?= h($_SESSION['RESERVE']['reserve_time']) ?></td>
     </tr>
     <tr>
       <th scope="row">予約人数</th>
-      <td><?= $_SESSION['RESERVE']['reserve_num'] ?></td>
+      <td><?= h($_SESSION['RESERVE']['reserve_num']) ?></td>
     </tr>
     <tr>
       <th scope="row">名前</th>
-      <td><?= $_SESSION['RESERVE']['name'] ?></td>
+      <td><?= h($_SESSION['RESERVE']['name']) ?></td>
     </tr>
     <tr>
       <th scope="row">メールアドレス</th>
-      <td><?= $_SESSION['RESERVE']['email'] ?></td>
+      <td><?= h($_SESSION['RESERVE']['email']) ?></td>
     </tr>
     <tr>
       <th scope="row">電話番号</th>
-      <td><?= $_SESSION['RESERVE']['tel'] ?></td>
+      <td><?= h($_SESSION['RESERVE']['tel']) ?></td>
     </tr>
     <tr>
       <th scope="row">備考欄</th>
-      <td><?= nl2br($_SESSION['RESERVE']['comment']) ?></td>
+      <td><?= nl2br(h($_SESSION['RESERVE']['comment'])) ?></td>
     </tr>
 
   </tbody>

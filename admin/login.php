@@ -19,6 +19,7 @@ try{
 
   if($_SERVER['REQUEST_METHOD'] == 'POST'){
     //POST処理時
+    check_token();
 
     //入力値を取得
     $login_id = $_POST['login_id'];
@@ -34,14 +35,13 @@ try{
     }
 
     if(empty($err)){
-      $sql = "SELECT * FROM shop WHERE login_id = :login_id AND login_password = :login_password LIMIT 1";
+      $sql = "SELECT * FROM shop WHERE login_id = :login_id LIMIT 1";
       $stmt = $pdo->prepare($sql);
       $stmt->bindValue(':login_id',$login_id,PDO::PARAM_STR);
-      $stmt->bindValue(':login_password',$login_password,PDO::PARAM_STR);
       $stmt->execute();
       $user = $stmt->fetch();
 
-      if($user){
+      if($user && password_verify($login_password, $user['login_password'])){
         //ログイン処理
         $_SESSION['USER'] = $user;
 
@@ -55,6 +55,7 @@ try{
     }
   }else{
     //画面初回アクセス時
+    set_token();
     $login_id = '';
     $login_password = '';
   }
@@ -100,7 +101,7 @@ unset($pdo);
     <div class="d-grid gap-2">
         <button class="btn btn-primary" type="submit">ログイン</button>
     </div>
-
+    <input type="hidden" name="CSRF_TOKEN" value="<?=$_SESSION['CSRF_TOKEN']?>">
 </form>
 </section>
 

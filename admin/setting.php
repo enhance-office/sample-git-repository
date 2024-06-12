@@ -37,6 +37,8 @@ for($i = 1; $i <= MAX_RESERVABLE_NUM; $i++){
 }
 
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
+  check_token();
+  
       //入力値を取得
       $reservable_date = $_POST['reservable_date'];
       $start_time = $_POST['start_time'];
@@ -83,6 +85,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
       }
 }else{
+  set_token();
+
   $reservable_date = $shop['reservable_date'];
   $start_time = format_time($shop['start_time']);
   $end_time = format_time($shop['end_time']);
@@ -177,7 +181,7 @@ unset($pdo);
         <button class="btn btn-primary" type="submit">登録</button>
     </div>
 
-
+    <input type="hidden" name="CSRF_TOKEN" value="<?=$_SESSION['CSRF_TOKEN']?>">
 </form>
 
 <?php include(dirname(__FILE__).'/../templates/script.php');?>

@@ -48,6 +48,12 @@ margin:20px;
     color:Green;
     margin: 0 auto;
 }
+.bi-exclamation-circle{
+    text-align: center;
+    font-size:80px;
+    color:red;
+    margin: 0 auto;
+}
 .btn-light{
     border: #ccc 1px solid;
 }

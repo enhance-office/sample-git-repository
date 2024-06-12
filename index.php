@@ -150,12 +150,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     }
 }
 }catch(Exception $e){
-    header('Location: /error.php');
-    unset($pdo);
+    header('Location: /reserve/error.php');
     exit;
 }
 unset($pdo);
 ?>
+
 
 <!doctype html>
 <html lang="ja">

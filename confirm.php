@@ -2,7 +2,7 @@
 require_once(dirname(__FILE__).'/functions.php');
 
 try{
-$page_title ='ご予約確認｜トリッキーズ';
+$page_title ='ご予約確認｜トリッキーズ学芸大学';
 
 session_start();
 $err = array();
@@ -53,7 +53,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
       $stmt->execute();
 
       //予約者にメール送信
-      $from='From:Web予約システムReserve <'.ADMIN_EMAIL.'>';
+      $from='From:トリッキーズ学芸大学Web予約システム <'.ADMIN_EMAIL.'>';
 
       $view_reserve_date=format_date($reserve_date);
 
@@ -126,7 +126,7 @@ EOT;
   <body>
 
 <header>
-    <h1>トリッキーズ</h1>
+    <h1>トリッキーズ学芸大学</h1>
 </header>
 
 <h2>ご予約確認</h2>

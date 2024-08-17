@@ -1,5 +1,5 @@
 <?php 
-$page_title ='エラー発生｜トリッキーズ';
+$page_title ='エラー発生｜トリッキーズ学芸大学';
 ?>
 
 <!doctype html>
@@ -10,7 +10,7 @@ $page_title ='エラー発生｜トリッキーズ';
   <body>
 
 <header>
-    <h1>トリッキーズ</h1>
+    <h1>トリッキーズ学芸大学</h1>
 </header>
 
 <h2>エラー発生</h2>

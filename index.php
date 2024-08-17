@@ -2,7 +2,7 @@
 require_once(dirname(__FILE__).'/functions.php');
 
 try{
-$page_title ='ご来店予約｜トリッキーズ';
+$page_title ='ご来店予約｜トリッキーズ学芸大学';
 
 session_start();
 $err = array();
@@ -167,7 +167,7 @@ unset($pdo);
   <body>
 
 <header>
-    <h1>トリッキーズ</h1>
+    <h1>トリッキーズ学芸大学</h1>
 </header>
 
 <h2>ご来店予約</h2>

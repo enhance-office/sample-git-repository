@@ -2,7 +2,7 @@
 require_once(dirname(__FILE__).'/../functions.php');
 
 try{
-$page_title ='ご予約リスト｜トリッキーズ';
+$page_title ='ご予約リスト｜トリッキーズ学芸大学';
   
 session_start();
 if(!isset($_SESSION['USER'])){
@@ -65,7 +65,7 @@ unset($pdo);
 
 <header class="navbar">
   <div class="container-fluid">
-    <h1 class="navbar-brand">トリッキーズ</h1>
+    <h1 class="navbar-brand">トリッキーズ学芸大学</h1>
     <div class="d-flex">
     <a href="reserve_list.php" class="btn btn-outline-success mx-2" type="submit"><i class="bi bi-list-ul"></i></a> 
     <a href="setting.php" class="btn btn-outline-success" type="submit"><i class="bi bi-gear-fill"></i></a> 

@@ -60,3 +60,26 @@ margin:20px;
 .confirrm-table td{
     width: 70%;
 }
+
+.logout_box{
+    text-align: center;
+    margin: 40px auto;
+}
+.logout_box p{
+    text-align: center;
+}
+
+.h_logout_btn{
+    font-size: 12px;
+    padding: 10px;
+    text-decoration: none;
+    color: #ccc;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    transition: 0.3s ease-in-out;
+}
+.h_logout_btn:hover{
+    color:#000;
+    border: 1px solid #ccc; 
+    background-color: #ccc;
+}

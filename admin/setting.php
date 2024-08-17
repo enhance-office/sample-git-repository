@@ -112,6 +112,7 @@ unset($pdo);
   <div class="container-fluid">
     <h1 class="navbar-brand">トリッキーズ学芸大学</h1>
     <div class="d-flex">
+    <a href="logout.php" class="h_logout_btn">ログアウト</a>
     <a href="reserve_list.php" class="btn btn-outline-success mx-2" type="submit"><i class="bi bi-list-ul"></i></a> 
     <a href="setting.php" class="btn btn-outline-success" type="submit"><i class="bi bi-gear-fill"></i></a> 
     </div>

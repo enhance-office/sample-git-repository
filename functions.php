@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__FILE__).'/../config/config.php');
+require_once(dirname(__FILE__).'/config/config.php');
 
 //DBに接続
 function connectDb()
@@ -70,7 +70,7 @@ function check_token()
 {
     if(empty($_SESSION['CSRF_TOKEN'])||($_SESSION['CSRF_TOKEN']!= $_POST['CSRF_TOKEN'])){
         unset($pdo);
-        header('Location: /reserve/error.php');
+        header('Location: /error.php');
         exit;
     }
 }

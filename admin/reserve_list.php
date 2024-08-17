@@ -6,8 +6,8 @@ $page_title ='ご予約リスト｜トリッキーズ';
   
 session_start();
 if(!isset($_SESSION['USER'])){
-  //ログインしていない場合はログイン画面へ↓何故かパスが教材とは違う/reserve/付けなければ動作しない
-  header('Location: /reserve/admin/login.php');
+  //ログインしていない場合はログイン画面へ
+  header('Location: /admin/login.php');
   unset($pdo);
   exit;
 }

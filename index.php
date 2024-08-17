@@ -122,7 +122,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         $_SESSION['RESERVE']['comment']=$comment;
 
         //予約確認画面へ遷移
-        header('Location: /reserve/confirm.php');
+        header('Location: /confirm.php');
         unset($pdo);
         exit;
         }
@@ -152,7 +152,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     }
 }
 }catch(Exception $e){
-    header('Location: /reserve/error.php');
+    header('Location: /error.php');
     exit;
 }
 unset($pdo);

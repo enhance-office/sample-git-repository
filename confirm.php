@@ -74,7 +74,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 ではご来店をお待ちしております。
 EOT;
 
-      //TODO:メール送信テストはサーバー上で実装
+      //TODO:メール送信はローカル環境ではできない為、実際のテストはサーバー上で実装
       // mb_send_mail($email,$subjet,$body,$from);
 
       //店舗管理者にメール送信
@@ -91,7 +91,7 @@ EOT;
 [備考]{$comment}
 EOT;
 
-      //TODO:メール送信テストはサーバー上で実装
+      //TODO:メール送信はローカル環境ではできない為、実際のテストはサーバー上で実装
       // mb_send_mail(ADMIN_EMAIL,$subjet,$body,$from);
 
       //予約が正常に完了したらセッションのデータをクリア
@@ -101,7 +101,7 @@ EOT;
       unset($pdo);
 
       //予約完了画面の表示
-      header('Location: /reserve/complete.php');
+      header('Location: /complete.php');
       unset($pdo);
       exit;
       }

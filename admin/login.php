@@ -11,8 +11,8 @@ try{
   $pdo = connectDb();
 
   if(isset($_SESSION['USER'])){
-    //ログイン済みの場合は予約一覧画面へ　↓何故かパスが教材とは違う/reserve/付けなければ動作しない
-    header('Location: /reserve/admin/reserve_list.php');
+    //ログイン済みの場合は予約一覧画面へ
+    header('Location: /admin/reserve_list.php');
     unset($pdo);
     exit;
   }
@@ -45,8 +45,8 @@ try{
         //ログイン処理
         $_SESSION['USER'] = $user;
 
-        //HOME画面へ推移　↓何故かパスが教材とは違う/reserve/付けなければ動作しない
-        header('Location: /reserve/admin/reserve_list.php');
+        //HOME画面へ推移
+        header('Location: /admin/reserve_list.php');
         unset($pdo);
         exit;
       }else{

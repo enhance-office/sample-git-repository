@@ -27,8 +27,8 @@ for($i = 0; $i <= MAX_RESERVABLE_DATA; $i++){
 }
 
 $time_array = array();
-for($i = 0; $i <= 23; $i++){
-  $time_array[sprintf('%02d',$i) .':00'] = sprintf('%02d',$i) .':00';
+for($i = 0; $i <= 29; $i++){ // 29時まで対応（午前5時）
+  $time_array[sprintf('%02d', $i % 24) . ':00'] = sprintf('%02d', $i % 24) . ':00';
 }
 
 $max_reserve_num_array =array();
@@ -39,52 +39,60 @@ for($i = 1; $i <= MAX_RESERVABLE_NUM; $i++){
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
   check_token();
   
-      //入力値を取得
-      $reservable_date = $_POST['reservable_date'];
-      $start_time = $_POST['start_time'];
-      $end_time = $_POST['end_time'];
-      $max_reserve_num = $_POST['max_reserve_num'];
+  // 入力値を取得
+  $reservable_date = $_POST['reservable_date'];
+  $start_time = $_POST['start_time'];
+  $end_time = $_POST['end_time'];
+  $max_reserve_num = $_POST['max_reserve_num'];
 
-      //バリデーションチェック
-      if(is_null($reservable_date)){
-        $err['reservable_date'] = '予約可能日を入力してください。';
-      }else if(!array_key_exists($reservable_date,$reservable_date_array)){
-        $err['reservable_date'] = '予約可能日を正しく入力してください。';
+  // バリデーションチェック
+  if(is_null($reservable_date)){
+      $err['reservable_date'] = '予約可能日を入力してください。';
+  } else if(!array_key_exists($reservable_date, $reservable_date_array)){
+      $err['reservable_date'] = '予約可能日を正しく入力してください。';
+  }
+
+  if(is_null($start_time)){
+      $err['start_time'] = '開始営業時間を入力してください。';
+  } else if(!array_key_exists($start_time, $time_array)){
+      $err['start_time'] = '開始営業時間を正しく入力してください。';
+  }
+
+  if(is_null($end_time)){
+      $err['end_time'] = '終了営業時間を入力してください。';
+  } else if(!array_key_exists($end_time, $time_array)){
+      $err['end_time'] = '終了営業時間を正しく入力してください。';
+  }
+
+  if(is_null($max_reserve_num)){
+      $err['max_reserve_num'] = '1時間あたりの予約上限人数を入力してください。';
+  } else if(!array_key_exists($max_reserve_num, $max_reserve_num_array)){
+      $err['max_reserve_num'] = '1時間あたりの予約上限人数を正しく入力してください。';
+  }
+
+  if(empty($err)){
+      // 開始時間と終了時間の比較
+      $start_timestamp = strtotime($start_time . ":00");
+      $end_timestamp = strtotime($end_time . ":00");
+
+      if ($end_timestamp <= $start_timestamp) {
+          // 終了時間が開始時間より早い場合は翌日と判断
+          $end_timestamp += 86400; // 24時間分（86400秒）を加算
+          $end_time = date('H:i', $end_timestamp);
       }
-      
-      if(is_null($start_time)){
-        $err['start_time'] = '開始営業時間を入力してください。';
-      }else if(!array_key_exists($start_time,$time_array)){
-        $err['start_time'] = '開始営業時間を正しく入力してください。';
-      }
 
-      if(is_null($end_time)){
-        $err['end_time'] = '終了営業時間を入力してください。';
-      }else if(!array_key_exists($end_time,$time_array)){
-        $err['end_time'] = '終了営業時間を正しく入力してください。';
-      }
+      $sql = "UPDATE shop SET reservable_date = :reservable_date, start_time = :start_time, end_time = :end_time, max_reserve_num = :max_reserve_num WHERE id = :id LIMIT 1";
+      $stmt = $pdo->prepare($sql);
+      $stmt->bindValue(':reservable_date', $reservable_date, PDO::PARAM_INT);
+      $stmt->bindValue(':start_time', $start_time, PDO::PARAM_STR);
+      $stmt->bindValue(':end_time', $end_time, PDO::PARAM_STR);
+      $stmt->bindValue(':max_reserve_num', $max_reserve_num, PDO::PARAM_INT);
+      $stmt->bindValue(':id', $shop['id'], PDO::PARAM_INT);
+      $stmt->execute();
 
-      if(is_null($max_reserve_num)){
-        $err['max_reserve_num'] = '1時間あたりの予約上限人数を入力してください。';
-      }else if(!array_key_exists($max_reserve_num,$max_reserve_num_array)){
-        $err['max_reserve_num'] = '1時間あたりの予約上限人数を正しく入力してください。';
-      }
-
-  
-      if(empty($err)){
-        $sql = "UPDATE shop SET reservable_date = :reservable_date, start_time = :start_time, end_time = :end_time, max_reserve_num = :max_reserve_num WHERE id = :id LIMIT 1";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindValue(':reservable_date',$reservable_date, PDO::PARAM_INT);
-        $stmt->bindValue(':start_time',$start_time, PDO::PARAM_STR);
-        $stmt->bindValue(':end_time',$end_time, PDO::PARAM_STR);
-        $stmt->bindValue(':max_reserve_num',$max_reserve_num, PDO::PARAM_INT);
-        $stmt->bindValue(':id',$shop['id'], PDO::PARAM_INT);
-        $stmt->execute();
-
-        $complete_meseage = '登録が完了しました。';
-
-      }
-}else{
+      $complete_meseage = '登録が完了しました。';
+  }
+} else {
   set_token();
 
   $reservable_date = $shop['reservable_date'];

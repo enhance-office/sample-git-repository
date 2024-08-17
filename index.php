@@ -23,14 +23,29 @@ for($i=0;$i<=$shop['reservable_date'];$i++){
     $reserve_date_array[date('Ymd',$target_date)]=date('n/j',$target_date);
 }
 
-//予約時間選択配列
-//TODO:24時以降を扱いたい
+// 予約時間選択配列
 $reserve_time_array = array();
-for($i=date('G',strtotime($shop['start_time'])); $i<=date('G',strtotime($shop['end_time'])); $i++){
-    $reserve_time_array[sprintf('%02d',$i).':00']=sprintf('%02d',$i).':00';
+
+$start_hour = (int)date('G', strtotime($shop['start_time']));
+$end_hour = (int)date('G', strtotime($shop['end_time']));
+
+// 開始時間が終了時間よりも大きい場合、24時を跨ぐと判断
+if ($start_hour <= $end_hour) {
+    for ($i = $start_hour; $i <= $end_hour; $i++) {
+        $reserve_time_array[sprintf('%02d', $i) . ':00'] = sprintf('%02d', $i) . ':00';
+    }
+} else {
+    // 24時を跨ぐ場合
+    for ($i = $start_hour; $i <= 23; $i++) {
+        $reserve_time_array[sprintf('%02d', $i) . ':00'] = sprintf('%02d', $i) . ':00';
+    }
+    for ($i = 0; $i <= $end_hour; $i++) {
+        $reserve_time_array[sprintf('%02d', $i) . ':00'] = sprintf('%02d', $i) . ':00';
+    }
 }
 
-//予約時間選択配列
+
+//予約人数選択配列
 $reserve_num_array = array();
 for($i=1;$i<=$shop['max_reserve_num'];$i++){
     //配列に設定

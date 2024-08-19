@@ -1,11 +1,12 @@
 body{
     font-size:14px;
     background-color:white;
+    margin: 0 auto;
 }
 header{
     background-color: black;
     padding: 20px 0;
-    margin: 0;
+    margin: 0 auto;
 }
 h1{
     font-size:20px;
@@ -23,9 +24,26 @@ h2{
     padding: 20px 0;
     margin: 0;
 }
+.og_mv{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-height: 200px;
+    width: 100%;
+    text-align: center;
+    margin: 0 auto 30px auto;
+    overflow: hidden;
+}
+.og_mv img{
+    width: 100%;
+    margin: 0 auto;
+}
 
 .og_box{
-margin:20px;
+max-width: 800px;
+width: 94%;;
+margin:20px auto;
+padding:2%;
 }
 .form-label{
     font-size:14px;

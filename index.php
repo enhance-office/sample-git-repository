@@ -187,6 +187,8 @@ unset($pdo);
 
 <h2>ご来店予約</h2>
 
+<div class="og_mv"><img src="img/mv.JPG" alt=""></div>
+
 
 <section class="og_box">
 <form method="post">
